@@ -27,11 +27,12 @@
 
       <form action="{% url 'otp' %}" method="post">
         {% csrf_token %}
+        
         <div>
-          <input type="hidden" value="{{otp}}">
+          <p style="color: red;">{{message}}</p>
         </div>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" name="user_otp" placeholder="OTP">
+          <input type="text" class="form-control" name="user_otp" placeholder="Enter OTP">
           
         </div>
         <div class="row">
