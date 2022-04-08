@@ -134,3 +134,4 @@ EMAIL_HOST_PASSWORD = 'Topssurat@0123'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+

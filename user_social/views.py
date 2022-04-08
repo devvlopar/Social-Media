@@ -1,3 +1,4 @@
+import email
 from random import randrange
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
@@ -70,24 +71,40 @@ def login(request):
                 uid = User.objects.get(email=request.POST['email'])
                 if request.POST['password'] == uid.password:
                     request.session['email'] = request.POST['email']
-                    return redirect('index')
+                    return render(request, 'index.html',{'uid':uid})
                 return render(request,'login.html',{'message':'Inncorrect password!!'})
             except:
                 message = 'Email is not registered.'
                 return render(request,'login.html',{'message':message})
-    return render(request,'login.html')
+        return render(request,'login.html')
 
 
 
 def logout(request):
-    del request.session['email']
-    return render(request,'login.html')
+    try:
+        request.session['email']
+        del request.session['email']
+        return render(request,'login.html')
+    except:
+        return render(request,'login.html')
+
 
 
 
 def forgot(request):
-    return render(request, 'login.html')
-
+    if request.method == 'POST':
+        try:
+            uid = User.objects.get(email=request.POST['email'])
+            subject = 'Forgotten Password of Social_Media_App.'
+            message = f'Your Password is {uid.password}.'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [request.POST['email'], ]
+            send_mail( subject, message, email_from, recipient_list )
+            message = 'Check Your Mailbox.'
+            return render(request, 'login.html',{'message':message})
+        except:
+            return render(request, 'forgot.html',{'message':'This Email is not Registered.!!'})
+    return render(request, 'forgot.html')
 
 
 
@@ -97,6 +114,17 @@ def notification(request):
 
 
 def profile(request):
-    return render(request,'profile.html')
-
+    try:
+        uid = User.objects.get(email=request.session['email'])
+        if request.method == 'POST':
+            uid.fullname = request.POST['fullname']
+            uid.bio = request.POST['bio']
+            uid.location = request.POST['location']
+            uid.profession = request.POST['profession']
+            uid.pic = request.FILES['pic']
+            uid.save()
+        else:
+            return render(request, 'profile.html',{'user_data':uid})
+    except:
+        return render(request,'login.html')
 
