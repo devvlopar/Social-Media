@@ -11,7 +11,7 @@ from django.conf import settings
 def index(request):
     try:
         uid = User.objects.get(email=request.session['email'])
-        return render(request,'index.html',{'uid':uid})
+        return render(request,'index.html',{'user_data':uid})
     except:
         return render(request,'login.html')
 
@@ -114,17 +114,28 @@ def notification(request):
 
 
 def profile(request):
-    try:
+    if request.method == 'post':
+        try:
+            uid = User.objects.get(email=request.session['email'])
+            if request.method == 'POST':
+                uid.fullname = request.POST['fullname']
+                uid.bio = request.POST['bio']
+                uid.location = request.POST['location']
+                uid.profession = request.POST['profession']
+                uid.pic = request.FILES['pic']
+                uid.save()
+                return render(request, 'profile.html',{'user_data':uid})
+
+            else:
+                return render(request, 'profile.html',{'user_data':uid})
+        except:
+            return render(request,'login.html')
+    else:
         uid = User.objects.get(email=request.session['email'])
-        if request.method == 'POST':
-            uid.fullname = request.POST['fullname']
-            uid.bio = request.POST['bio']
-            uid.location = request.POST['location']
-            uid.profession = request.POST['profession']
-            uid.pic = request.FILES['pic']
-            uid.save()
-        else:
-            return render(request, 'profile.html',{'user_data':uid})
-    except:
-        return render(request,'login.html')
+        return render(request, 'profile.html', {'user_data':uid})
+
+
+
+def add_post(request):
+    return render(request, 'add_post.html')
 

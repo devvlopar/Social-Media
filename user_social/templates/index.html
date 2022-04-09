@@ -21,7 +21,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <div class="wrapper">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white ">
     <div class="container">
       <a href='{% url "index" %}' class="navbar-brand">
         <span class="brand-text font-weight-dark">Social Media</span>
@@ -34,7 +34,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
         <!-- SEARCH FORM -->
-        <form class="form-inline ml-0 ml-md-3" >
+        <!-- <form class="form-inline ml-0 ml-md-3" >
           <div class="input-group input-group-sm">
             <input class="form-control form-control-navbar " type="search" placeholder="Search" aria-label="Search">
             <div class="input-group-append">
@@ -43,14 +43,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </button>
             </div>
           </div>
-        </form>
+        </form> -->
       <!-- </div> -->
 
       <!-- Right navbar links -->
-      <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+      <ul class="order-4 order-md-3 navbar-nav navbar-no-expand ml-auto">
         <!-- Messages Dropdown Menu -->
         
-       
+        
+        <li class="nav-item ">
+          <a href="{% url 'add_post' %}"  aria-haspopup="true" aria-expanded="false" class="nav-link">
+            <i class="fas fa-plus-square"></i>
+          </a>
+          
+        </li>
+        
+        
+        <!-- <i class="fa fa-plus-square-o" aria-hidden="true"></i> -->
         <!-- Profile Dropdown Menu -->
         
         <li class="nav-item dropdown">
@@ -61,8 +70,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li><a href="{% url 'notification' %}" class="dropdown-item">Notifications</a></li>
             <li><a href="{% url 'profile' %}" class="dropdown-item">View Profile</a></li>
             <li><a href="{% url 'logout' %}" class="dropdown-item"> <i class="fas fa-sign-out-alt"> Logout </i></a></li>
-            
-      </ul>
+          </ul>
+        </li>
     </div>
   </nav>
   <!-- /.navbar -->
@@ -74,13 +83,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="container">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"> Top Navigation <small>Example 3.0</small></h1>
+            <h1 class="m-0"><small>Feed</small></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item"><a href="#">Layout</a></li>
-              <li class="breadcrumb-item active">Top Navigation</li>
+              <li class="breadcrumb-item active">Feed</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -93,63 +101,91 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Main content -->
     <div class="content">
       <div class="container">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
+          <div class="row">
+            <div class="col-md-2"></div>
 
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk of the card's
-                  content.
-                </p>
-
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
-            </div>
-
-            <div class="card card-primary card-outline">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk of the card's
-                  content.
-                </p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
-            </div><!-- /.card -->
-          </div>
-          <!-- /.col-md-6 -->
-          <div class="col-lg-6">
-            <div class="card">
+          <div class="col-md-8">
+            <!-- Box Comment -->
+            <div class="card card-widget">
               <div class="card-header">
-                <h5 class="card-title m-0">Featured</h5>
+                <div class="user-block">
+                  <img class="img-circle" src="{{user_data.pic.url}}" alt="User Image">
+                  <span class="username"><a href="">{{user_data.fullname}}</a></span>
+                  <span class="description">Shared publicly - 7:30 PM Today</span>
+                </div>
+                <!-- /.user-block -->
+                <!-- <div class="card-tools">
+                  <button type="button" class="btn btn-tool" title="Mark as read">
+                    <i class="far fa-circle"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div> -->
+                <!-- /.card-tools -->
               </div>
+              <!-- /.card-header -->
               <div class="card-body">
-                <h6 class="card-title">Special title treatment</h6>
+                <img class="img-fluid pad" src="{% static '2.jpg' %}" alt="Photo">
 
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <p></p> 
+                <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
+                <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
+                <span class="float-right text-muted">127 likes - 3 comments</span>
               </div>
+              <!-- /.card-body -->
+              <div class="card-footer card-comments">
+                <div class="card-comment">
+                  <!-- User image -->
+                  <img class="img-circle img-sm" src="{% static 'munawar.jpg' %}" alt="User Image">
+
+                  <div class="comment-text">
+                    <span class="username">
+                      Munawar Faruqui
+                      <span class="text-muted float-right">8:03 PM Today</span>
+                    </span><!-- /.username -->
+                    It is a long established fact that a reader will be distracted
+                    by the readable content of a page when looking at its layout.
+                  </div>
+                  <!-- /.comment-text -->
+                </div>
+                <!-- /.card-comment -->
+                <div class="card-comment">
+                  <!-- User image -->
+                  <img class="img-circle img-sm" src="{% static 'urooj.jpg' %}" alt="User Image">
+
+                  <div class="comment-text">
+                    <span class="username">
+                      Urooj Ashfaq
+                      <span class="text-muted float-right">8:03 PM Today</span>
+                    </span><!-- /.username -->
+                    It is a long established fact that a reader will be distracted
+                    by the readable content of a page when looking at its layout.
+                  </div>
+                  <!-- /.comment-text -->
+                </div>
+                <!-- /.card-comment -->
+              </div>
+              <!-- /.card-footer -->
+              <div class="card-footer">
+                <form action="#" method="post">
+                  <img class="img-fluid img-circle img-sm" src="{{user_data.pic.url}}" alt="Alt Text">
+                  <!-- .img-push is used to add margin to elements next to floating images -->
+                  <div class="img-push">
+                    <input type="text" class="form-control form-control-sm" name="comment" placeholder="Press enter to post comment">
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-footer -->
             </div>
-
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="card-title m-0">Featured</h5>
-              </div>
-              <div class="card-body">
-                <h6 class="card-title">Special title treatment</h6>
-
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
+            <!-- /.card -->
           </div>
-          <!-- /.col-md-6 -->
-        </div>
+
+          <div class="col-md-2"></div>
+
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -184,6 +220,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- AdminLTE App -->
 <script src='{% static "dist/js/adminlte.min.js" %}'></script>
 <!-- AdminLTE for demo purposes -->
-<script src='{% static "dist/js/demo.js" %}'></script>
+
 </body>
 </html>
