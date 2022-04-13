@@ -1,9 +1,9 @@
-import email
+
 from random import randrange
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 
-from user_social.models import User
+from user_social.models import User, Post
 from django.conf import settings
 
 
@@ -64,14 +64,14 @@ def otp_fun(request):
 def login(request):
     try:
         uid = User.objects.get(email=request.session['email'])
-        return render(request,'index.html',{'uid':uid})
+        return render(request,'index.html',{'user_data':uid})
     except:
         if request.method == 'POST':
             try:
                 uid = User.objects.get(email=request.POST['email'])
                 if request.POST['password'] == uid.password:
                     request.session['email'] = request.POST['email']
-                    return render(request, 'index.html',{'uid':uid})
+                    return render(request, 'index.html',{'user_data':uid})
                 return render(request,'login.html',{'message':'Inncorrect password!!'})
             except:
                 message = 'Email is not registered.'
@@ -114,20 +114,22 @@ def notification(request):
 
 
 def profile(request):
-    if request.method == 'post':
+    if request.method == 'POST':
         try:
             uid = User.objects.get(email=request.session['email'])
-            if request.method == 'POST':
-                uid.fullname = request.POST['fullname']
+            uid.fullname = request.POST['fullname']
+            if request.POST['bio']:
                 uid.bio = request.POST['bio']
+            if request.POST['location']:
                 uid.location = request.POST['location']
+            if request.POST['profession']:
                 uid.profession = request.POST['profession']
+            if request.FILES:
                 uid.pic = request.FILES['pic']
                 uid.save()
-                return render(request, 'profile.html',{'user_data':uid})
-
             else:
-                return render(request, 'profile.html',{'user_data':uid})
+                uid.save()
+            return render(request, 'profile.html',{'user_data':uid})
         except:
             return render(request,'login.html')
     else:
@@ -137,5 +139,26 @@ def profile(request):
 
 
 def add_post(request):
+    if request.method == 'POST':
+        c = request.POST['private_status']
+        print(c)
+        user_data = User.objects.get(email=request.session['email'])
+        if request.POST['private_status'] == 'public':
+            Post.objects.create(
+                user = user_data,
+                caption = request.POST['caption'],
+                hashtag = request.POST['hashtag'],
+                pic = request.FILES['pic'],
+                private_status = False
+            )
+        else:
+            Post.objects.create(
+                user = user_data,
+                caption = request.POST['caption'],
+                hashtag = request.POST['hashtag'],
+                pic = request.FILES['pic'],
+                private_status = True
+            )
+        return render(request, 'add_post.html', {'msg':'Post Added Successfully!'})
     return render(request, 'add_post.html')
 

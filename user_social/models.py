@@ -1,4 +1,3 @@
-import email
 from django.db import models
 
 # Create your models here.
@@ -14,7 +13,19 @@ class User(models.Model):
     followers = models.IntegerField(default=0)
     following = models.IntegerField(default=0)
 
-    
-
     def __str__(self):
         return self.fullname
+
+class Post(models.Model):
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    caption = models.CharField(max_length=100)
+    private_status = models.BooleanField(default=False)
+    hashtag = models.CharField(max_length=50)
+    date = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(null=True,blank=True)
+    pic = models.FileField(upload_to='posts',null=True,blank=True)
+    likes = models.ManyToManyField(User,related_name='likes',blank=True)
+    
+    def __str__(self):
+        return str(self.caption)
