@@ -1,9 +1,8 @@
-
 from random import randrange
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 
-from user_social.models import User, Post
+from user_social.models import User, Post, Comment
 from django.conf import settings
 
 
@@ -11,7 +10,9 @@ from django.conf import settings
 def index(request):
     try:
         uid = User.objects.get(email=request.session['email'])
-        return render(request,'index.html',{'user_data':uid})
+        posts = Post.objects.all()[::-1]
+        comments = Comment.objects.all()[::-1]
+        return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
     except:
         return render(request,'login.html')
 
@@ -64,14 +65,19 @@ def otp_fun(request):
 def login(request):
     try:
         uid = User.objects.get(email=request.session['email'])
-        return render(request,'index.html',{'user_data':uid})
+        posts = Post.objects.all()[::-1]
+        comments = Comment.objects.all()[::-1]
+        return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
+
     except:
         if request.method == 'POST':
             try:
                 uid = User.objects.get(email=request.POST['email'])
                 if request.POST['password'] == uid.password:
                     request.session['email'] = request.POST['email']
-                    return render(request, 'index.html',{'user_data':uid})
+                    posts = Post.objects.all()[::-1]
+                    comments = Comment.objects.all()[::-1]
+                    return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
                 return render(request,'login.html',{'message':'Inncorrect password!!'})
             except:
                 message = 'Email is not registered.'
@@ -140,8 +146,6 @@ def profile(request):
 
 def add_post(request):
     if request.method == 'POST':
-        c = request.POST['private_status']
-        print(c)
         user_data = User.objects.get(email=request.session['email'])
         if request.POST['private_status'] == 'public':
             Post.objects.create(
@@ -161,4 +165,12 @@ def add_post(request):
             )
         return render(request, 'add_post.html', {'msg':'Post Added Successfully!'})
     return render(request, 'add_post.html')
+
+
+def comment(request,pk):
+    if request.method == 'POST':
+        user_data = User.objects.get(email=request.session['email']) 
+        post = Post.objects.get(id=pk)
+        Comment.objects.create(user = user_data, post = post, text = request.POST['comment'])
+        return redirect('index')
 

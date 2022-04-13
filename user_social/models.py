@@ -16,6 +16,7 @@ class User(models.Model):
     def __str__(self):
         return self.fullname
 
+
 class Post(models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -29,3 +30,14 @@ class Post(models.Model):
     
     def __str__(self):
         return str(self.caption)
+
+
+class Comment(models.Model):
+    
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    text = models.CharField(max_length=150)
+    at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text
