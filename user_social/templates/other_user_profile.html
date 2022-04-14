@@ -48,7 +48,7 @@
                     <b>Following</b> <a class="float-right">{{other_user.followers}}</a>
                   </li>
                 </ul>
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                <a href="{% url 'follow' other_user.id %}" class="btn btn-primary btn-block"><b>Follow</b></a>
               </div>
               <!-- /.card-body -->
             </div>

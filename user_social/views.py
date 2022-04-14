@@ -1,3 +1,4 @@
+import email
 from random import randrange
 from wsgiref.util import request_uri
 from django.shortcuts import render, redirect
@@ -181,6 +182,14 @@ def other_user_profile(request,pk):
     other_user = User.objects.get(id=pk)
     return render(request, 'other_user_profile.html', {'other_user':other_user})
 
+def follow(request,pk):
+    other_user = User.objects.get(id=pk)
+    session_user = User.objects.get(email=request.POST['email'])
+    if pk != session_user.id:
+        pass
+
+    return render(request,'index.html')
+
 def change_password(request):
     if request.method == 'POST':
         user_data = User.objects.get(email=request.session['email'])
@@ -220,6 +229,8 @@ def email_otp(request):
                 return render(request, 'login.html', {'message':'Email is successfully changed!'})
         return render(request, 'email_otp.html',{'otp':request.POST['otp']})
     
+
+
 
 def settings(request):
     return render(request, )

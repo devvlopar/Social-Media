@@ -15,6 +15,7 @@ urlpatterns = [
     path('change_email/', views.change_email, name='change_email'),
     path('comment/<int:pk>', views.comment, name='comment'),
     path('settings/', views.settings, name="settings"),
+    path('follow/<int:pk>', views.follow, name="follow"),
     path('other_user_profile/<int:pk>', views.other_user_profile, name='other_user_profile'),
 
 
