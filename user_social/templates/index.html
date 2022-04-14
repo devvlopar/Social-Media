@@ -34,29 +34,28 @@
             <div class="card-header">
               <div class="user-block">
                 <img class="img-circle" src="{{single_post.user.pic.url}}" alt="User Image">
-                <span class="username"><a href="">{{single_post.user.fullname}}</a></span>
+                <span class="username"><a href="{% url 'other_user_profile' single_post.user.id %}">{{single_post.user.fullname}}</a></span>
                 <span class="description">{{single_post.date}}</span>
               </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-              <img class="img-fluid pad" src="{{single_post.pic.url}}" alt="Photo">
-
-              <p></p> 
-              <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-              <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-              {% for single_comment in comments %}
-              {% if single_comment.post == single_post %}
-              <span class="float-right text-muted">127 likes - {{single_comment.po}} comments</span>
-              {% endif %}
-              {% endfor %}
+              <img class="img-fluid pad" width="705px" height="705px" src="{{single_post.pic.url}}" alt="Photo"><hr>
+              <span class="float-left ">
+                <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
+                <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
+              </span>
+              <span class="float-right text-muted">127 likes - {{single_post.comment_count}} comments</span>
+              <br><br>
+              <b> <p>{{single_post.user.fullname}} -  </b> {{single_post.caption}} </p>
+                <p>{{single_post.hashtag}}</p>
             </div>
 
             <!-- /.card-footer -->
             <div class="card-footer">
               <form action="{% url 'comment' single_post.id %}" method="post">
                 {% csrf_token %}
-                <img class="img-fluid img-circle img-sm" src="{{user_data.pic.url}}" alt="Alt Text">
+                <img class="img-fluid img-circle img-sm" width="" src="{{user_data.pic.url}}" alt="Alt Text">
                 <!-- .img-push is used to add margin to elements next to floating images -->
                 <div class="img-push">
                   <input type="text" class="form-control form-control-sm" name="comment" placeholder="Press enter to post comment" required>

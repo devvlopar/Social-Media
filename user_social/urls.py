@@ -11,7 +11,12 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('forgot/', views.forgot, name='forgot'),
     path('add_post/', views.add_post, name='add_post'),
+    path('change_password/', views.change_password, name='change_password'),
+    path('change_email/', views.change_email, name='change_email'),
     path('comment/<int:pk>', views.comment, name='comment'),
+    path('settings/', views.settings, name="settings"),
+    path('other_user_profile/<int:pk>', views.other_user_profile, name='other_user_profile'),
+
 
 
 

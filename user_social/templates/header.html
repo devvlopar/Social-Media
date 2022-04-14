@@ -51,9 +51,17 @@
           <a href="{% url 'add_post' %}"  aria-haspopup="true" aria-expanded="false" class="nav-link">
             <i class="fas fa-plus-square"></i>
           </a>
-          
         </li>
         
+        <li class="nav-item dropdown">
+          <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+          </a>
+          <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a href="{% url 'change_password' %}" class="dropdown-item">Change Password</a></li>
+            <li><a href="{% url 'change_email' %}" class="dropdown-item">Change Email</a></li>
+          </ul>
+        </li>
         
         
         
@@ -63,7 +71,7 @@
           </a>
           <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li><a href="{% url 'notification' %}" class="dropdown-item">Notifications</a></li>
-            <li><a href="{% url 'profile' %}" class="dropdown-item">View Profile</a></li>
+            <li><a href="{% url 'profile' %}" class="dropdown-item">My Profile</a></li>
             <li><a href="{% url 'logout' %}" class="dropdown-item"> <i class="fas fa-sign-out-alt"> Logout </i></a></li>
           </ul>
         </li>

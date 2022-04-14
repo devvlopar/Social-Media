@@ -1,0 +1,50 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br><br><br><br><br>
+<div class="row">
+  <div class="col-md-4"></div>
+<div class="col-md-6">
+
+<div class="login-box">
+  <div class="login-logo">
+    <a href="{% url 'change_email' %}"><b>New</b>Email Verification</a>
+  </div>
+  <!-- /.login-logo -->
+  
+  <div class="card">
+    <div class="card-body login-card-body">
+      <form action="{% url 'email_otp' %}" method='POST'>
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name="user_otp" placeholder="Enter OTP">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <input type="hidden" class="form-control" name="otp" value="{{otp}}" >
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+      
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+</div>
+
+</div>
+<div class="col-md-2"></div>
+</div>
+
+<br><br><br><br><br><br><br><br>
+
+<!-- /.login-box -->
+
+{% endblock %}

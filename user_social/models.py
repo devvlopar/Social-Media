@@ -27,6 +27,7 @@ class Post(models.Model):
     update = models.DateTimeField(null=True,blank=True)
     pic = models.FileField(upload_to='posts',null=True,blank=True)
     likes = models.ManyToManyField(User,related_name='likes',blank=True)
+    comment_count = models.IntegerField(default=0)
     
     def __str__(self):
         return str(self.caption)

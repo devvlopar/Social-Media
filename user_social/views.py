@@ -1,7 +1,7 @@
 from random import randrange
+from wsgiref.util import request_uri
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
-
 from user_social.models import User, Post, Comment
 from django.conf import settings
 
@@ -12,6 +12,7 @@ def index(request):
         uid = User.objects.get(email=request.session['email'])
         posts = Post.objects.all()[::-1]
         comments = Comment.objects.all()[::-1]
+        comments = Comment.objects.filter()
         return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
     except:
         return render(request,'login.html')
@@ -171,6 +172,50 @@ def comment(request,pk):
     if request.method == 'POST':
         user_data = User.objects.get(email=request.session['email']) 
         post = Post.objects.get(id=pk)
+        post.comment_count += 1
+        post.save()
         Comment.objects.create(user = user_data, post = post, text = request.POST['comment'])
         return redirect('index')
 
+def other_user_profile(request,pk):
+    other_user = User.objects.get(id=pk)
+    return render(request, 'other_user_profile.html', {'other_user':other_user})
+
+def change_password(request):
+    if request.method == 'POST':
+        user_data = User.objects.get(email=request.session['email'])
+        if request.POST['password'] == request.POST['rpassword']:
+            user_data.password = request.POST['password']
+            user_data.save()
+            del request.session['email']
+            return render(request, 'login.html', {'message':'Password Changed Successfully!'})
+    return render(request, 'recover-password.html')
+
+def change_email(request):
+    if request.method == 'POST':
+        subject = 'Change Your Email on Social Media.'
+        global email_new
+        email_new = request.POST['email']
+        otp = randrange(1000,9999)
+        message = f'Your OTP is {otp}.'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [request.POST['email'], ]
+        send_mail( subject, message, email_from, recipient_list )
+        message = 'Check Your Mailbox.'
+        return render(request, 'email_otp.html',{'message':message, 'otp':otp})
+    return render(request, 'change_email.html')
+
+def email_otp(request):
+    if request.method == 'POST':
+        user_data = User.objects.get(email=request.session['email'])
+        if request.POST['user_otp'] == request.POST['otp']:
+            global email_new
+            user_data.email = email_new
+            user_data.save()
+            del email_new
+            return render(request, 'login.html', {'message':'Email is successfully changed!'})
+        return render(request, 'email_otp.html',{'otp':request.POST['otp']})
+    
+
+def settings(request):
+    return render(request, )
