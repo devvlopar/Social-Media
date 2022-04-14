@@ -3,7 +3,7 @@ from wsgiref.util import request_uri
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from user_social.models import User, Post, Comment
-from django.conf import settings
+from django.conf import settings as setting
 
 
 
@@ -37,7 +37,7 @@ def register(request):
                 subject = 'Email Verification Social_Media_App.'
                 message = f'Your OTP is {otp}.'
                 msg = 'Check Your MailBox.'
-                email_from = settings.EMAIL_HOST_USER
+                email_from = setting.EMAIL_HOST_USER
                 recipient_list = [request.POST['email'], ]
                 send_mail( subject, message, email_from, recipient_list )
                 return render(request,'otp.html',{'message':msg})
@@ -193,12 +193,12 @@ def change_password(request):
 
 def change_email(request):
     if request.method == 'POST':
-        subject = 'Change Your Email on Social Media.'
         global email_new
         email_new = request.POST['email']
-        otp = randrange(1000,9999)
+        otp = randrange(100000,999999)
+        subject = 'Email Verification Social_Media_App.'
         message = f'Your OTP is {otp}.'
-        email_from = settings.EMAIL_HOST_USER
+        email_from = setting.EMAIL_HOST_USER
         recipient_list = [request.POST['email'], ]
         send_mail( subject, message, email_from, recipient_list )
         message = 'Check Your Mailbox.'
@@ -209,11 +209,15 @@ def email_otp(request):
     if request.method == 'POST':
         user_data = User.objects.get(email=request.session['email'])
         if request.POST['user_otp'] == request.POST['otp']:
-            global email_new
-            user_data.email = email_new
-            user_data.save()
-            del email_new
-            return render(request, 'login.html', {'message':'Email is successfully changed!'})
+            try:
+                global email_new
+                User.objects.get(email=email_new)
+                return render(request, 'login.html', {'message':'Account already exist with this Email.'})
+            except:
+                user_data.email = email_new
+                user_data.save()
+                del email_new
+                return render(request, 'login.html', {'message':'Email is successfully changed!'})
         return render(request, 'email_otp.html',{'otp':request.POST['otp']})
     
 
