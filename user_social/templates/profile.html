@@ -34,16 +34,20 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                   <img class="profile-user-img img-fluid img-circle"
-                       src="{{user_data.pic.url}}"
+                       src="{{session_user.pic.url}}"
                        alt="User profile picture">
                 </div>
-                <h3 class="profile-username text-center">{{user_data.fullname}}</h3>
+                
+                <h3 class="profile-username text-center">{{session_user.fullname}}</h3>
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
-                    <b>Followers</b> <a class="float-right">{{user_data.followers}}</a>
+                    <span class="username"><a href="{% url 'view_followers' session_user.id %}">Followers</a></span>
+                    
+                    <a class="float-right">{{session_user.followers}}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Following</b> <a class="float-right">{{user_data.following}}</a>
+                    <span class="username"><a href="{% url 'view_following' session_user.id %}">Following</a></span>
+                    <a class="float-right">{{session_user.following}}</a>
                   </li>
                 </ul>
                 <!-- <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> -->
@@ -63,14 +67,14 @@
                 <strong><i class="fa fa-briefcase mr-1 " aria-hidden="true"></i> Profession </strong>
 
                 <p class="text-muted">
-                 {{user_data.profession}}
+                 {{session_user.profession}}
                 </p>
 
                 <hr>
 
                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
 
-                <p class="text-muted">{{user_data.location}}</p>
+                <p class="text-muted">{{session_user.location}}</p>
 
                 <hr>
 
@@ -78,7 +82,7 @@
 
                 <strong><i class="fas fa-pencil-alt mr-1"></i> Bio</strong>
 
-                <p class="text-muted">{{user_data.bio}}</p>
+                <p class="text-muted">{{session_user.bio}}</p>
               </div>
               <!-- /.card-body -->
             </div>
@@ -103,25 +107,25 @@
                       <div class="form-group row">
                         <label for="inputName" class="col-sm-2 col-form-label">Full Name</label>
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputName" name="fullname" value="{{user_data.fullname}}" placeholder="Full Name" required>
+                          <input type="text" class="form-control" id="inputName" name="fullname" value="{{session_user.fullname}}" placeholder="Full Name" required>
                         </div>
                       </div>
                       <div class="form-group row">
                         <label for="inputEmail" class="col-sm-2 col-form-label">Profession</label>
                         <div class="col-sm-10">
-                          <input type="text" name="profession" class="form-control" id="inputEmail" value="{{user_data.profession}}" placeholder="Profession">
+                          <input type="text" name="profession" class="form-control" id="inputEmail" value="{{session_user.profession}}" placeholder="Profession">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label for="inputExperience" class="col-sm-2 col-form-label">Bio</label>
                         <div class="col-sm-10">
-                          <textarea class="form-control" id="inputExperience" name="bio" value="{{user_data.bio}}" placeholder="Bio"></textarea>
+                          <textarea class="form-control" id="inputExperience" name="bio" value="{{session_user.bio}}" placeholder="Bio"></textarea>
                         </div>
                       </div>
                       <div class="form-group row">
                         <label for="inputSkills" class="col-sm-2 col-form-label">Location</label>
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" name="location" id="inputSkills" value="{{user_data.location}}" placeholder="Location">
+                          <input type="text" class="form-control" name="location" id="inputSkills" value="{{session_user.location}}" placeholder="Location">
                         </div>
                       </div>
 

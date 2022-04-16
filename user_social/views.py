@@ -9,10 +9,10 @@ from django.conf import settings as setting
 
 def index(request):
     try:
-        uid = User.objects.get(email=request.session['email'])
-        posts = Post.objects.all()[::-1]
+        session_user = User.objects.get(email=request.session['email'])
+        posts = Post.objects.filter()[::-1]
         comments = Comment.objects.all()[::-1]
-        return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
+        return render(request,'index.html',{'session_user':session_user, 'posts':posts, 'comments':comments})
     except:
         return render(request,'login.html')
 
@@ -64,10 +64,10 @@ def otp_fun(request):
 
 def login(request):
     try:
-        uid = User.objects.get(email=request.session['email'])
+        session_user = User.objects.get(email=request.session['email'])
         posts = Post.objects.all()[::-1]
         comments = Comment.objects.all()[::-1]
-        return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
+        return render(request,'index.html',{'session_user':session_user, 'posts':posts, 'comments':comments})
 
     except:
         if request.method == 'POST':
@@ -77,7 +77,7 @@ def login(request):
                     request.session['email'] = request.POST['email']
                     posts = Post.objects.all()[::-1]
                     comments = Comment.objects.all()[::-1]
-                    return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
+                    return render(request,'index.html',{'session_user':uid, 'posts':posts, 'comments':comments})
                 return render(request,'login.html',{'message':'Inncorrect password!!'})
             except:
                 message = 'Email is not registered.'
@@ -121,25 +121,25 @@ def notification(request):
 def profile(request):
     if request.method == 'POST':
         try:
-            uid = User.objects.get(email=request.session['email'])
-            uid.fullname = request.POST['fullname']
+            session_user = User.objects.get(email=request.session['email'])
+            session_user.fullname = request.POST['fullname']
             if request.POST['bio']:
-                uid.bio = request.POST['bio']
+                session_user.bio = request.POST['bio']
             if request.POST['location']:
-                uid.location = request.POST['location']
+                session_user.location = request.POST['location']
             if request.POST['profession']:
-                uid.profession = request.POST['profession']
+                session_user.profession = request.POST['profession']
             if request.FILES:
-                uid.pic = request.FILES['pic']
-                uid.save()
+                session_user.pic = request.FILES['pic']
+                session_user.save()
             else:
-                uid.save()
-            return render(request, 'profile.html',{'user_data':uid})
+                session_user.save()
+                return render(request, 'profile.html',{'session_user':session_user})
         except:
             return render(request,'login.html')
     else:
-        uid = User.objects.get(email=request.session['email'])
-        return render(request, 'profile.html', {'user_data':uid})
+        session_user = User.objects.get(email=request.session['email'])
+        return render(request, 'profile.html', {'session_user':session_user})
 
 
 
@@ -184,7 +184,6 @@ def other_user_profile(request,pk):
     if pk == session_user.id:
         return redirect('profile')
     else:
-        
         f1 = Follow.objects.filter(who=session_user, follows_whom=other_user)
         if not f1:
             disable_follow_button = False
@@ -302,3 +301,21 @@ def delete_account(request):
             return render(request, 'login.html',{'message':'Account Deleted!'})
         else:
             return render(request, 'delete_account.html',{'message':'Password is Wrong!'})
+
+
+
+def view_followers(request,pk):
+        session_user = User.objects.get(email=request.session['email'])
+        users_collection = Follow.objects.filter(follows_whom=pk)
+        print('followers',users_collection)
+        
+        return render(request, 'view_following_followers.html',{'users_collection':users_collection, 'session_user':session_user})
+
+
+
+def view_following(request,pk):
+        session_user = User.objects.get(email=request.session['email'])
+        users_collection = Follow.objects.filter(who=pk)
+        print('following',users_collection)
+
+        return render(request, 'view_following_followers.html',{'users_collection':users_collection, 'session_user':session_user, 'following':'following'})

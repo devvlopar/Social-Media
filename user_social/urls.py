@@ -20,18 +20,9 @@ urlpatterns = [
     path('follow/<int:pk>', views.follow, name="follow"),
     path('unfollow/<int:pk>', views.unfollow, name="unfollow"),
     path('other_user_profile/<int:pk>', views.other_user_profile, name='other_user_profile'),
-
-
-
-
-
-    
-
+    path('view_followers/<int:pk>', views.view_followers, name='view_followers'),
+    path('view_following/<int:pk>', views.view_following, name='view_following'),
     path('notification/', views.notification, name='notification'),
-
-
-
-
-
+    path('notification/', views.notification, name='notification'),
 
 ]

@@ -42,10 +42,13 @@
                 <h3 class="profile-username text-center">{{other_user.fullname}}</h3>
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
-                    <b>Followers</b> <a class="float-right">{{other_user.followers}}</a>
+                    <span class="username"><a href="{% url 'view_followers' other_user.id %}">Followers</a></span>
+                    
+                    <a class="float-right">{{other_user.followers}}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Following</b> <a class="float-right">{{other_user.following}}</a>
+                    <span class="username"><a href="{% url 'view_following' other_user.id %}">Following</a></span>
+                    <a class="float-right">{{other_user.following}}</a>
                   </li>
                 </ul>
 

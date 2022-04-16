@@ -1,0 +1,52 @@
+{% extends 'without_footer.html' %}
+{% load static %}
+
+{% block content %}
+<br><br><br>
+{% for user in users_collection %}
+{% if following != 'following' %}
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+<div class="card card-widget widget-user-2">
+    <!-- Add the bg color to the header using any of the bg-* classes -->
+    <div class="widget-user-header ">
+      <div class="widget-user-image">
+        <img class="img-circle elevation-2" src="{{user.who.pic.url}}" alt="User Avatar">
+      </div>
+      <div class="float-left">
+      <!-- /.widget-user-image -->
+      <h3><span class="widget-user-desc"><a href="{% url 'other_user_profile' user.who.id %}" style="color: black;" >{{  user.who.fullname}}</a></span></h3>
+      <!-- <h3 href="{% url 'other_user_profile' user.who.id %}" class="widget-user-username">{{user.who.fullname}}</h3> -->
+      <h5 class="widget-user-desc">{{user.who.profession}}</h5>
+      </div>
+    </div>
+</div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+<div class="card card-widget widget-user-2">
+  <!-- Add the bg color to the header using any of the bg-* classes -->
+  <div class="widget-user-header ">
+    <div class="widget-user-image">
+      <img class="img-circle elevation-2" src="{{user.follows_whom.pic.url}}" alt="User Avatar">
+    </div>
+    <div class="float-left">
+    <!-- /.widget-user-image -->
+    <h3><span class="widget-user-desc"><a href="{% url 'other_user_profile' user.follows_whom.id %}" style="color: black;" >{{  user.follows_whom.fullname}}</a></span></h3>
+    <!-- <h3 href="{% url 'other_user_profile' user.who.id %}" class="widget-user-username">{{user.who.fullname}}</h3> -->
+    <h5 class="widget-user-desc">{{user.follows_whom.profession}}</h5>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class="col-md-4"></div>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endblock %}
