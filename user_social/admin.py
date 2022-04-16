@@ -5,3 +5,7 @@ from .models import *
 @admin.register(User)
 class AdminUser(admin.ModelAdmin):
     list_display = ['fullname','id','email','password']
+
+@admin.register(Follow)
+class AdminFollow(admin.ModelAdmin):
+    list_display = ['who', 'follows_whom']

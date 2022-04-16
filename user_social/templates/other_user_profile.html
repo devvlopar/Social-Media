@@ -45,10 +45,16 @@
                     <b>Followers</b> <a class="float-right">{{other_user.followers}}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Following</b> <a class="float-right">{{other_user.followers}}</a>
+                    <b>Following</b> <a class="float-right">{{other_user.following}}</a>
                   </li>
                 </ul>
+
+                {% if not disable %}
                 <a href="{% url 'follow' other_user.id %}" class="btn btn-primary btn-block"><b>Follow</b></a>
+                {% else %}
+                <a href="{% url 'unfollow' other_user.id %}" class="btn btn-secondary btn-block"><b>Unfollow</b></a>
+                {% endif %}
+
               </div>
               <!-- /.card-body -->
             </div>

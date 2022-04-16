@@ -1,9 +1,8 @@
-import email
 from random import randrange
-from wsgiref.util import request_uri
+from urllib import request
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
-from user_social.models import User, Post, Comment
+from user_social.models import Follow, User, Post, Comment
 from django.conf import settings as setting
 
 
@@ -13,7 +12,6 @@ def index(request):
         uid = User.objects.get(email=request.session['email'])
         posts = Post.objects.all()[::-1]
         comments = Comment.objects.all()[::-1]
-        comments = Comment.objects.filter()
         return render(request,'index.html',{'user_data':uid, 'posts':posts, 'comments':comments})
     except:
         return render(request,'login.html')
@@ -98,14 +96,13 @@ def logout(request):
 
 
 
-
 def forgot(request):
     if request.method == 'POST':
         try:
             uid = User.objects.get(email=request.POST['email'])
             subject = 'Forgotten Password of Social_Media_App.'
             message = f'Your Password is {uid.password}.'
-            email_from = settings.EMAIL_HOST_USER
+            email_from = setting.EMAIL_HOST_USER
             recipient_list = [request.POST['email'], ]
             send_mail( subject, message, email_from, recipient_list )
             message = 'Check Your Mailbox.'
@@ -169,6 +166,7 @@ def add_post(request):
     return render(request, 'add_post.html')
 
 
+
 def comment(request,pk):
     if request.method == 'POST':
         user_data = User.objects.get(email=request.session['email']) 
@@ -178,17 +176,56 @@ def comment(request,pk):
         Comment.objects.create(user = user_data, post = post, text = request.POST['comment'])
         return redirect('index')
 
+
+
 def other_user_profile(request,pk):
     other_user = User.objects.get(id=pk)
-    return render(request, 'other_user_profile.html', {'other_user':other_user})
+    session_user = User.objects.get(email=request.session['email'])
+    if pk == session_user.id:
+        return redirect('profile')
+    else:
+        
+        f1 = Follow.objects.filter(who=session_user, follows_whom=other_user)
+        if not f1:
+            disable_follow_button = False
+            # print(disable_follow_button)
+            return render(request, 'other_user_profile.html', {'other_user':other_user, 'session_user':session_user, 'disable':disable_follow_button})
+        else:
+            disable_follow_button = True
+            # print(disable_follow_button, f1)
+            return render(request, 'other_user_profile.html', {'other_user':other_user, 'session_user':session_user, 'disable':disable_follow_button})
+
+
 
 def follow(request,pk):
     other_user = User.objects.get(id=pk)
-    session_user = User.objects.get(email=request.POST['email'])
+    session_user = User.objects.get(email=request.session['email'])
     if pk != session_user.id:
-        pass
+        Follow.objects.create(
+            who = session_user,
+            follows_whom = other_user,
+        )
+        session_user.following += 1
+        other_user.followers += 1
+        session_user.save()
+        other_user.save()
+        return redirect('other_user_profile',pk)
 
-    return render(request,'index.html')
+
+
+
+def unfollow(request,pk):
+    other_user = User.objects.get(id=pk)
+    session_user = User.objects.get(email=request.session['email'])
+    Follow.objects.filter(who=session_user.id, follows_whom=pk).delete()
+    session_user.following -= 1
+    other_user.followers -= 1
+    session_user.save()
+    other_user.save()
+    return redirect('other_user_profile',pk)
+
+
+
 
 def change_password(request):
     if request.method == 'POST':
@@ -199,6 +236,8 @@ def change_password(request):
             del request.session['email']
             return render(request, 'login.html', {'message':'Password Changed Successfully!'})
     return render(request, 'recover-password.html')
+
+
 
 def change_email(request):
     if request.method == 'POST':
@@ -213,6 +252,8 @@ def change_email(request):
         message = 'Check Your Mailbox.'
         return render(request, 'email_otp.html',{'message':message, 'otp':otp})
     return render(request, 'change_email.html')
+
+
 
 def email_otp(request):
     if request.method == 'POST':
@@ -231,6 +272,33 @@ def email_otp(request):
     
 
 
+def like(request,pk):
+    liked_post = Post.objects.get(id=pk)
+    session_user = User.objects.get(email=request.session['email'])
+    liked_post.likes.add(session_user)
+    liked_post.likes_count += 1
+    liked_post.save()
+    return redirect('index')
 
-def settings(request):
-    return render(request, )
+
+
+def unlike(request,pk):
+    liked_post = Post.objects.get(id=pk)
+    session_user = User.objects.get(email=request.session['email'])
+    liked_post.likes.remove(session_user)
+    liked_post.likes_count -= 1
+    liked_post.save()
+    return redirect('index')
+
+
+
+def delete_account(request):
+    if request.method == 'GET':
+        return render(request, 'delete_account.html')
+    else:
+        session_user = User.objects.get(email=request.session['email'])
+        if request.POST['password'] == session_user.password:
+            session_user.delete()
+            return render(request, 'login.html',{'message':'Account Deleted!'})
+        else:
+            return render(request, 'delete_account.html',{'message':'Password is Wrong!'})

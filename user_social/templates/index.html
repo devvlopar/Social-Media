@@ -42,10 +42,15 @@
             <div class="card-body">
               <img class="img-fluid pad" width="705px" height="705px" src="{{single_post.pic.url}}" alt="Photo"><hr>
               <span class="float-left ">
-                <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
+                {% if user_data in single_post.likes.all %}
+                <a href="{% url 'unlike' single_post.id %}" class="btn btn-default btn-sm"><i class="fas fa-thumbs-up"><b> Like</b></i></a>
+                {% else %}
+                <a href="{% url 'like' single_post.id %}" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"><b> Like</b></i></a>
+                {% endif %}
+                <!-- <a href="{% url 'like' single_post.id %}" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</a> -->
                 <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
               </span>
-              <span class="float-right text-muted">127 likes - {{single_post.comment_count}} comments</span>
+              <span class="float-right text-muted">{{single_post.likes_count}} likes - {{single_post.comment_count}} comments</span>
               <br><br>
               <b> <p>{{single_post.user.fullname}} -  </b> {{single_post.caption}} </p>
                 <p>{{single_post.hashtag}}</p>

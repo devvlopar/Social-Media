@@ -13,9 +13,12 @@ urlpatterns = [
     path('add_post/', views.add_post, name='add_post'),
     path('change_password/', views.change_password, name='change_password'),
     path('change_email/', views.change_email, name='change_email'),
+    path('delete_account/', views.delete_account, name='delete_account'),
     path('comment/<int:pk>', views.comment, name='comment'),
-    path('settings/', views.settings, name="settings"),
+    path('like/<int:pk>', views.like, name="like"),
+    path('unlike/<int:pk>', views.unlike, name="unlike"),
     path('follow/<int:pk>', views.follow, name="follow"),
+    path('unfollow/<int:pk>', views.unfollow, name="unfollow"),
     path('other_user_profile/<int:pk>', views.other_user_profile, name='other_user_profile'),
 
 

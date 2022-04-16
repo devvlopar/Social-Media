@@ -27,6 +27,7 @@ class Post(models.Model):
     update = models.DateTimeField(null=True,blank=True)
     pic = models.FileField(upload_to='posts',null=True,blank=True)
     likes = models.ManyToManyField(User,related_name='likes',blank=True)
+    likes_count = models.IntegerField(default=0)
     comment_count = models.IntegerField(default=0)
     
     def __str__(self):
@@ -39,6 +40,16 @@ class Comment(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE)
     text = models.CharField(max_length=150)
     at = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
         return self.text
+
+
+class Follow(models.Model):
+
+    who = models.ForeignKey(User, related_name='who_follows', on_delete=models.CASCADE)
+    follows_whom = models.ForeignKey(User, related_name='follows_whom', on_delete=models.CASCADE)
+    
+
+    def __sdd__(self):
+        return self.who
