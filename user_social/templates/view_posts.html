@@ -9,12 +9,12 @@
     <div class="container">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0"><small>Feed</small></h1>
+          <h1 class="m-0"><small>My Posts</small></h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Feed</li>
+            <li class="breadcrumb-item"><a href="#">Me</a></li>
+            <li class="breadcrumb-item active">My Posts</li>
           </ol>
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -43,9 +43,9 @@
               <img class="img-fluid pad" width="705px" height="705px" src="{{single_post.pic.url}}" alt="Photo"><hr>
               <span class="float-left ">
                 {% if session_user in single_post.likes.all %}
-                <a href="{% url 'unlike' single_post.id %}" class="btn btn-default btn-sm"><i class="fas fa-thumbs-up"><b> Like</b></i></a>
+                <a href="{% url 'unlike_session' single_post.id %}" class="btn btn-default btn-sm"><i class="fas fa-thumbs-up"><b> Like</b></i></a>
                 {% else %}
-                <a href="{% url 'like' single_post.id %}" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"><b> Like</b></i></a>
+                <a href="{% url 'like_session' single_post.id %}" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"><b> Like</b></i></a>
                 {% endif %}
                 <!-- <a href="{% url 'like' single_post.id %}" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</a> -->
                 <!-- <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button> -->
@@ -58,7 +58,7 @@
 
             <!-- /.card-footer -->
             <div class="card-footer">
-              <form action="{% url 'comment' single_post.id %}" method="post">
+              <form action="{% url 'comment_session' single_post.id %}" method="post">
                 {% csrf_token %}
                 <img class="img-fluid img-circle img-sm" width="" src="{{session_user.pic.url}}" alt="Alt Text">
                 <!-- .img-push is used to add margin to elements next to floating images -->

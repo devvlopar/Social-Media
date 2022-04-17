@@ -1,5 +1,4 @@
 from random import randrange
-from urllib import request
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from user_social.models import Follow, User, Post, Comment
@@ -10,11 +9,33 @@ from django.conf import settings as setting
 def index(request):
     try:
         session_user = User.objects.get(email=request.session['email'])
-        posts = Post.objects.filter()[::-1]
+        #for posts
+        posts = []
+        # session_users_posts
+        p2 = list(Post.objects.filter(user=session_user))
+        # session users' followings posts
+        these_users_posts = Follow.objects.filter(who=session_user.id)
+        for i in these_users_posts:
+            p1 = list(Post.objects.filter(user=i.follows_whom))
+            for j in p1:
+                posts.append(j)
+            for k in p2:
+                posts.insert(0,k)
+        # p1osts = Post.objects.filter()[::-1]
+        # posts = reversed(posts)
+        print(posts)
+        # print(p1osts)
         comments = Comment.objects.all()[::-1]
         return render(request,'index.html',{'session_user':session_user, 'posts':posts, 'comments':comments})
     except:
         return render(request,'login.html')
+    
+def view_posts(request):
+        session_user = User.objects.get(email=request.session['email'])
+        posts = Post.objects.filter(user=session_user)[::-1]
+        comments = Comment.objects.all()[::-1]
+        return render(request,'view_posts.html',{'session_user':session_user, 'posts':posts, 'comments':comments})
+
 
 
 
@@ -144,8 +165,8 @@ def profile(request):
 
 
 def add_post(request):
+    session_user = User.objects.get(email=request.session['email'])
     if request.method == 'POST':
-        user_data = User.objects.get(email=request.session['email'])
         if request.POST['private_status'] == 'public':
             Post.objects.create(
                 user = user_data,
@@ -162,8 +183,8 @@ def add_post(request):
                 pic = request.FILES['pic'],
                 private_status = True
             )
-        return render(request, 'add_post.html', {'msg':'Post Added Successfully!'})
-    return render(request, 'add_post.html')
+        return render(request, 'add_post.html', {'msg':'Post Added Successfully!','session_user': session_user })
+    return render(request, 'add_post.html',{'session_user':session_user})
 
 
 
@@ -175,6 +196,17 @@ def comment(request,pk):
         post.save()
         Comment.objects.create(user = user_data, post = post, text = request.POST['comment'])
         return redirect('index')
+    
+
+
+def comment_session(request,pk):
+    if request.method == 'POST':
+        user_data = User.objects.get(email=request.session['email']) 
+        post = Post.objects.get(id=pk)
+        post.comment_count += 1
+        post.save()
+        Comment.objects.create(user = user_data, post = post, text = request.POST['comment'])
+        return redirect('view_posts')
 
 
 
@@ -227,18 +259,19 @@ def unfollow(request,pk):
 
 
 def change_password(request):
+    user_data = User.objects.get(email=request.session['email'])
     if request.method == 'POST':
-        user_data = User.objects.get(email=request.session['email'])
         if request.POST['password'] == request.POST['rpassword']:
             user_data.password = request.POST['password']
             user_data.save()
             del request.session['email']
             return render(request, 'login.html', {'message':'Password Changed Successfully!'})
-    return render(request, 'recover-password.html')
+    return render(request, 'recover-password.html', {'session_user':user_data})
 
 
 
 def change_email(request):
+    user_data = User.objects.get(email=request.session['email'])
     if request.method == 'POST':
         global email_new
         email_new = request.POST['email']
@@ -250,7 +283,7 @@ def change_email(request):
         send_mail( subject, message, email_from, recipient_list )
         message = 'Check Your Mailbox.'
         return render(request, 'email_otp.html',{'message':message, 'otp':otp})
-    return render(request, 'change_email.html')
+    return render(request, 'change_email.html',{'session_user':user_data})
 
 
 
@@ -281,6 +314,16 @@ def like(request,pk):
 
 
 
+def like_session(request,pk):
+    liked_post = Post.objects.get(id=pk)
+    session_user = User.objects.get(email=request.session['email'])
+    liked_post.likes.add(session_user)
+    liked_post.likes_count += 1
+    liked_post.save()
+    return redirect('view_posts')
+
+
+
 def unlike(request,pk):
     liked_post = Post.objects.get(id=pk)
     session_user = User.objects.get(email=request.session['email'])
@@ -288,6 +331,16 @@ def unlike(request,pk):
     liked_post.likes_count -= 1
     liked_post.save()
     return redirect('index')
+
+
+
+def unlike_session(request,pk):
+    liked_post = Post.objects.get(id=pk)
+    session_user = User.objects.get(email=request.session['email'])
+    liked_post.likes.remove(session_user)
+    liked_post.likes_count -= 1
+    liked_post.save()
+    return redirect('view_posts')
 
 
 
@@ -319,3 +372,14 @@ def view_following(request,pk):
         print('following',users_collection)
 
         return render(request, 'view_following_followers.html',{'users_collection':users_collection, 'session_user':session_user, 'following':'following'})
+
+
+
+def search(request):
+    session_user = User.objects.get(email=request.session['email'])
+    if request.method == 'POST':
+        word = str(request.POST['word'])
+        queried_data = User.objects.filter(fullname__icontains=word)
+        return render(request, 'search.html',{'users_collection':queried_data, 'session_user':session_user, 'return_word':word})
+    else:
+        return render(request,'search.html',{'session_user':session_user})

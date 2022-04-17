@@ -1,0 +1,64 @@
+{% extends 'without_footer.html' %}
+{% load static %}
+
+{% block content %}
+<div class="wrapper">
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <h2 class="text-center display-4">Search </h2>
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form action="{% url 'search' %}" method="POST" >
+                      {% csrf_token %}
+                        <div class="input-group">
+                            <input type="search" class="form-control form-control-lg" name="word" placeholder="Search users" value="{{return_word}}" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-lg btn-default">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <br><br>
+{% for user in users_collection %}
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+<div class="card card-widget widget-user-2">
+    <!-- Add the bg color to the header using any of the bg-* classes -->
+    <div class="widget-user-header ">
+      <div class="widget-user-image">
+        <img class="img-circle elevation-2" src="{{user.pic.url}}" alt="User Avatar">
+      </div>
+      <div class="float-left">
+      <!-- /.widget-user-image -->
+      <h3><span class="widget-user-desc"><a href="{% url 'other_user_profile' user.id %}" style="color: black;" >{{user.fullname}}</a></span></h3>
+      <h5 class="widget-user-desc">{{user.profession}}</h5>
+      </div>
+    </div>
+</div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+{% endfor %}
+
+
+
+
+        </div>
+    </section>
+  </div>
+
+</div>
+
+{% endblock %}
