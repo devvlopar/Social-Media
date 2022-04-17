@@ -79,14 +79,29 @@ def otp_fun(request):
             return render(request,'login.html',{'message':msg})     
         else:
             return render(request, 'otp.html',{'message':'otp comparision error'})   
-    return render(request, 'otp.html')
+    
 
 
 
 def login(request):
     try:
         session_user = User.objects.get(email=request.session['email'])
-        posts = Post.objects.all()[::-1]
+        #for posts
+        posts = []
+        # session_users_posts
+        p2 = list(Post.objects.filter(user=session_user))
+        # session users' followings posts
+        these_users_posts = Follow.objects.filter(who=session_user.id)
+        for i in these_users_posts:
+            p1 = list(Post.objects.filter(user=i.follows_whom))
+            for j in p1:
+                posts.append(j)
+            for k in p2:
+                posts.insert(0,k)
+        # p1osts = Post.objects.filter()[::-1]
+        # posts = reversed(posts)
+        
+        # print(p1osts)
         comments = Comment.objects.all()[::-1]
         return render(request,'index.html',{'session_user':session_user, 'posts':posts, 'comments':comments})
 
@@ -96,9 +111,25 @@ def login(request):
                 uid = User.objects.get(email=request.POST['email'])
                 if request.POST['password'] == uid.password:
                     request.session['email'] = request.POST['email']
-                    posts = Post.objects.all()[::-1]
-                    comments = Comment.objects.all()[::-1]
-                    return render(request,'index.html',{'session_user':uid, 'posts':posts, 'comments':comments})
+                session_user = User.objects.get(email=request.session['email'])
+                #for posts
+                posts = []
+                # session_users_posts
+                p2 = list(Post.objects.filter(user=session_user))
+                # session users' followings posts
+                these_users_posts = Follow.objects.filter(who=session_user.id)
+                for i in these_users_posts:
+                    p1 = list(Post.objects.filter(user=i.follows_whom))
+                    for j in p1:
+                        posts.append(j)
+                    for k in p2:
+                        posts.insert(0,k)
+                # p1osts = Post.objects.filter()[::-1]
+                # posts = reversed(posts)
+                print(posts)
+                # print(p1osts)
+                comments = Comment.objects.all()[::-1]
+                return render(request,'index.html',{'session_user':session_user, 'posts':posts, 'comments':comments})
                 return render(request,'login.html',{'message':'Inncorrect password!!'})
             except:
                 message = 'Email is not registered.'
