@@ -19,8 +19,8 @@ def index(request):
             p1 = list(Post.objects.filter(user=i.follows_whom))
             for j in p1:
                 posts.append(j)
-            for k in p2:
-                posts.insert(0,k)
+        for k in p2:
+            posts.insert(0,k)
         # p1osts = Post.objects.filter()[::-1]
         # posts = reversed(posts)
         print(posts)
@@ -96,8 +96,8 @@ def login(request):
             p1 = list(Post.objects.filter(user=i.follows_whom))
             for j in p1:
                 posts.append(j)
-            for k in p2:
-                posts.insert(0,k)
+        for k in p2:
+            posts.insert(0,k)
         # p1osts = Post.objects.filter()[::-1]
         # posts = reversed(posts)
         
