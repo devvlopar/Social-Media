@@ -51,5 +51,19 @@ class Follow(models.Model):
     follows_whom = models.ForeignKey(User, related_name='follows_whom', on_delete=models.CASCADE)
     
 
-    def __sdd__(self):
+    def __str__(self):
         return self.who
+    
+
+class Notification(models.Model):
+
+    choice = [('L','like'),('F','follow'),('C','comment'),('P','post')]
+    type = models.CharField(max_length=1, choices=choice)
+    user = models.ForeignKey(User, related_name='who_generates', on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, related_name='comment',null=True, blank=True, on_delete=models.CASCADE)
+    follow = models.ForeignKey(Follow, related_name='follow', null=True, blank=True, on_delete=models.CASCADE )
+    like = models.ForeignKey(Post, related_name='which_post_being_liked', null=True, blank=True, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,related_name='posts_post_on_feed', null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.type
