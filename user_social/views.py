@@ -166,7 +166,7 @@ def forgot(request):
 
 
 def notification(request):
-    return render(request,'login.html')
+    return render(request,'notification.html')
 
 
 
@@ -214,6 +214,7 @@ def add_post(request):
                 pic = request.FILES['pic'],
                 private_status = True
             )
+        No
         return render(request, 'add_post.html', {'msg':'Post Added Successfully!','session_user': session_user })
     return render(request, 'add_post.html',{'session_user':session_user})
 
